@@ -1,7 +1,7 @@
 'use client';
 
-import { UserList } from './components/user-list';
-import { CreateUserForm } from './components/create-user-form';
+import { UserList } from './components/user-list.component';
+import { CreateUserForm } from './components/create-user-form.component';
 import { useGetAllUsers } from './hooks';
 import { Link } from '@radix-ui/themes';
 import { ExportOutlined } from '@ant-design/icons';
@@ -16,10 +16,10 @@ export default function HomePage() {
           User Admin Dashboard
         </h1>
         <Link href="/maps">
-          <a className="flex justify-start pt-2 gap-2">
+          <span className="flex justify-start pt-2 gap-2">
             <p className="text-md">Go to maps</p>
             <ExportOutlined />
-          </a>
+          </span>
         </Link>
       </header>
       <div className="grid grid-cols-4 gap-4 flex-grow w-full">

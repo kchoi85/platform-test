@@ -1,10 +1,16 @@
 'use client';
 
 import { MapContainer, TileLayer } from 'react-leaflet';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { DOWNTOWN_TORONTO_CENTER_COORDS } from '../constants';
+import {
+  DOWNTOWN_TORONTO_CENTER_COORDS,
+  LEAFLET_MAP_DARK_MODE_URL,
+  LEAFLET_MAP_LIGHT_MODE_URL,
+} from '../constants';
 import dynamic from 'next/dynamic';
+import { MapControlPanel } from './components/map-control-panel.component';
+import { MapSidePanel } from './components/map-side-panel.component';
 
 // Dynamically import MapEventHandler only on the client side.
 const DynamicMapEventHandler = dynamic(
@@ -13,15 +19,36 @@ const DynamicMapEventHandler = dynamic(
 );
 
 export default function MapsPage() {
-  const [center, setCenter] = useState(DOWNTOWN_TORONTO_CENTER_COORDS);
+  const [center, setCenter] = useState<number[]>(
+    DOWNTOWN_TORONTO_CENTER_COORDS
+  );
   const [bounds, setBounds] = useState(null);
+  const [isLightMode, setIsLightMode] = useState(() => {
+    const savedMode = localStorage?.getItem('lightMode');
+    return savedMode ? savedMode === 'true' : true; // default to light mode if not set
+  });
 
-  // IMPORTANT: Memoize the callback to prevent unnecessary re-renders.
+  useEffect(() => {
+    localStorage?.setItem('lightMode', String(isLightMode));
+  }, [isLightMode]);
+
+  const mapTileUrl = isLightMode
+    ? LEAFLET_MAP_LIGHT_MODE_URL
+    : LEAFLET_MAP_DARK_MODE_URL;
+
+  const toggleLightMode = () => {
+    setIsLightMode((prev) => !prev);
+  };
+
+  // Memoize the callback to prevent unnecessary re-renders.
   const handleBoundsChange = useCallback((newBounds) => {
     setBounds(newBounds);
     const newCenter = newBounds.getCenter();
     setCenter([newCenter.lat, newCenter.lng]);
   }, []);
+
+  // Optionally, prevent rendering on the server.
+  if (typeof window === 'undefined') return null;
 
   return (
     <main className="flex h-screen">
@@ -33,35 +60,18 @@ export default function MapsPage() {
           style={{ height: '100%', width: '100%' }}
         >
           <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url={mapTileUrl}
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           <DynamicMapEventHandler onBoundsChange={handleBoundsChange} />
         </MapContainer>
       </div>
 
-      {/* Right side panel */}
-      <aside className="w-1/4 bg-white shadow p-4 overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Map Boundaries</h2>
-        {bounds ? (
-          <div>
-            <p>
-              <strong>SouthWest:</strong> {bounds.getSouthWest().lat.toFixed(4)}
-              , {bounds.getSouthWest().lng.toFixed(4)}
-            </p>
-            <p>
-              <strong>NorthEast:</strong> {bounds.getNorthEast().lat.toFixed(4)}
-              , {bounds.getNorthEast().lng.toFixed(4)}
-            </p>
-            <p>
-              <strong>Center:</strong> {center[0].toFixed(4)},{' '}
-              {center[1].toFixed(4)}
-            </p>
-          </div>
-        ) : (
-          <p>Move the map to see boundaries.</p>
-        )}
-      </aside>
+      <MapControlPanel
+        isLightMode={isLightMode}
+        onToggleLightMode={toggleLightMode}
+      />
+      <MapSidePanel bounds={bounds} center={center} />
     </main>
   );
 }
