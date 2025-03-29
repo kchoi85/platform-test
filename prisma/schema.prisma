@@ -13,8 +13,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String  @unique
+// ENUMS //
+enum Role {
+  ADMIN
+  OWNER
+  CUSTOMER
 }
+
+enum PropertyType {
+  APARTMENT
+  HOUSE
+  CONDO
+  TOWNHOUSE
+  VILLA
+  STUDIO
+  LOFT
+  BUNGALOW
+  COTTAGE
+  FARMHOUSE
+}
+// END ENUMS //
+
+// MODELS //
+model User {
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  role       Role        @default(CUSTOMER)
+  properties Property[]  // Many-to-many: a user can own multiple properties
+}
+
+model Property {
+  id      Int     @id @default(autoincrement())
+  title   String
+  address String?
+  owners  User[]  // Many-to-many: a property can be owned by multiple users
+}
+// END MODELS //

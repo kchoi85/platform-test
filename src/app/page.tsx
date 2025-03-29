@@ -17,7 +17,7 @@ export default function HomePage() {
         </h1>
         <Link href="/maps">
           <span className="flex justify-start pt-2 gap-2">
-            <p className="text-md">Go to maps</p>
+            <p className="text-md">Go to maps as admin</p>
             <ExportOutlined />
           </span>
         </Link>

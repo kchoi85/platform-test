@@ -24,6 +24,8 @@ export default function MapsPage() {
   );
   const [bounds, setBounds] = useState(null);
   const [isLightMode, setIsLightMode] = useState(() => {
+    if (typeof window === 'undefined') return true;
+
     const savedMode = localStorage?.getItem('lightMode');
     return savedMode ? savedMode === 'true' : true; // default to light mode if not set
   });

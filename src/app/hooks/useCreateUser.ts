@@ -1,29 +1,40 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { trpc } from '@/utils/trpc';
+import { Role } from '../shared/enums';
 
-// Define a zod schema for the user creation form.
 const createUserSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email'),
+  role: z.nativeEnum(Role),
 });
 
-// Infer TypeScript type from the zod schema.
-type CreateUserFormData = z.infer<typeof createUserSchema>;
+export type CreateUserFormData = z.infer<typeof createUserSchema>;
 
 export const useCreateUser = () => {
-  // Initialize form state using the inferred type.
-  const [formData, setFormData] = useState<CreateUserFormData>({
-    name: '',
-    email: '',
-  });
   const utils = trpc.useUtils();
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateUserFormData>({
+    resolver: zodResolver(createUserSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      role: Role.OWNER,
+    },
+  });
 
   const { mutate: createUser, isPending } = trpc.user.create.useMutation({
     onSuccess: () => {
-      setFormData({ name: '', email: '' });
+      reset();
     },
     onError: (error) => {
       alert(`Error: ${error.message}`);
@@ -33,26 +44,16 @@ export const useCreateUser = () => {
     },
   });
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  const onSubmit = (data: CreateUserFormData) => {
+    createUser(data);
+  };
 
-  const handleSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const result = createUserSchema.safeParse(formData);
-      if (!result.success) {
-        const errorMessages = result.error.issues
-          .map((issue) => issue.message)
-          .join('\n');
-        alert(errorMessages);
-        return;
-      }
-      createUser(formData);
-    },
-    [formData, createUser]
-  );
-
-  return { formData, handleChange, handleSubmit, isPending };
+  return {
+    control,
+    register,
+    handleSubmit,
+    errors,
+    onSubmit,
+    isSubmitting: isSubmitting || isPending,
+  };
 };

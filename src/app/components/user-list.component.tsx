@@ -1,7 +1,7 @@
 'use client';
 
 import { User } from '@prisma/client';
-import { Box, Container, Progress, Table } from '@radix-ui/themes';
+import { Container, Spinner, Table } from '@radix-ui/themes';
 import Link from 'next/link';
 
 export function UserList({
@@ -11,19 +11,26 @@ export function UserList({
   users: User[] | undefined;
   isLoading: boolean;
 }) {
-  if (!isLoading && (!users || users.length === 0))
-    return <p className="text-center text-gray-500">No users found.</p>;
+  if (!users || users.length === 0)
+    return (
+      <p className="text-center text-gray-500 flex justify-center items-center min-h-[300px] border bg-white border-gray-300 rounded-lg">
+        {isLoading ? <Spinner /> : 'No users found.'}
+      </p>
+    );
 
+  console.log(users);
   return (
     <div className="shadow-lg">
       {isLoading ? (
         <Container align="center" className="h-50"></Container>
       ) : (
-        <Table.Root variant="surface">
+        <Table.Root variant="surface" className="min-h-[300px] ">
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeaderCell>Full name</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Email</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>Role</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>Properties</Table.ColumnHeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -38,6 +45,11 @@ export function UserList({
                     {user.email}
                   </Link>
                 </Table.Cell>
+                <Table.Cell>
+                  {user.role?.charAt(0).toUpperCase() +
+                    user.role?.slice(1).toLowerCase()}
+                </Table.Cell>
+                <Table.Cell>{user?.properties?.length}</Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
