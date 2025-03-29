@@ -1,16 +1,13 @@
 'use client';
 
-import { useGetAllUsers } from './hooks';
 import { Link } from '@radix-ui/themes';
 import { ExportOutlined } from '@ant-design/icons';
 import { LeftActionPanel, UserList } from './components';
 
 export default function HomePage() {
-  const { users, isLoading } = useGetAllUsers();
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-100 via-red-50 to-purple-100 p-8">
-      <header className="mb-8 text-center">
+      <header className="mb-6 text-center">
         <h1 className="text-3xl  text-gray-800 flex justify-start">
           Admin Dashboard
         </h1>
@@ -26,7 +23,7 @@ export default function HomePage() {
           <LeftActionPanel />
         </div>
         <div className="col-span-3">
-          <UserList users={users} isLoading={isLoading} />
+          <UserList />
         </div>
       </div>
     </main>

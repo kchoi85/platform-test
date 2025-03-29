@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { trpc } from '@/utils/trpc';
 
 export const createPropertySchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -14,11 +15,14 @@ export const createPropertySchema = z.object({
   province: z.string().optional(),
   country: z.string().optional(),
   postalCode: z.string().optional(),
+  ownerId: z.string(), //?
 });
 
 export type CreatePropertyFormData = z.infer<typeof createPropertySchema>;
 
 export const useCreateProperty = () => {
+  // const utils = trpc.useUtils();
+
   const {
     control,
     register,
@@ -39,14 +43,25 @@ export const useCreateProperty = () => {
       country: '',
       province: '',
       postalCode: '',
+      ownerId: '0',
     },
   });
 
+  const { mutate: createProperty, isPending } =
+    trpc.property.create.useMutation({
+      onSuccess: () => {
+        reset();
+      },
+      onError: (error) => {
+        alert(`Error: ${error.message}`);
+      },
+      onSettled: () => {
+        // utils.property.getAll.invalidate();
+      },
+    });
+
   const onSubmit = (data: CreatePropertyFormData) => {
-    console.log('Submitting property:', data);
-    // Example: createPropertyMutation.mutate(data);
-    // Reset form after submission if needed:
-    // reset();
+    createProperty(data);
   };
 
   return {
@@ -57,6 +72,6 @@ export const useCreateProperty = () => {
     watch,
     errors,
     onSubmit,
-    isSubmitting,
+    isSubmitting: isSubmitting || isPending,
   };
 };

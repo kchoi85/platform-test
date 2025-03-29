@@ -1,24 +1,19 @@
 'use client';
 
-import { User } from '@prisma/client';
-import { Container, Spinner, Table } from '@radix-ui/themes';
+import { Spinner, Table } from '@radix-ui/themes';
 import Link from 'next/link';
+import { useGetAllUsers } from '../hooks';
 
-export function UserList({
-  users,
-  isLoading,
-}: {
-  users: User[] | undefined;
-  isLoading: boolean;
-}) {
+export function UserList() {
+  const { users, isLoading: usersLoading } = useGetAllUsers();
+
   if (!users || users.length === 0)
     return (
       <p className="text-center text-gray-500 flex justify-center items-center min-h-[350px] border bg-white border-gray-300 rounded-lg">
-        {isLoading ? <Spinner /> : 'No users found.'}
+        {usersLoading ? <Spinner /> : 'No users found.'}
       </p>
     );
 
-  console.log(users);
   return (
     <div className="shadow-lg">
       <Table.Root variant="surface" className="min-h-[350px]">

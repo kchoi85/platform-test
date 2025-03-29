@@ -53,13 +53,12 @@ export function CreateUserForm() {
             )}
           </div>
 
-          {/* Role select using Controller for custom input */}
           <Controller
             name="role"
             control={control}
             render={({ field }) => (
               <Select.Root value={field.value} onValueChange={field.onChange}>
-                <Select.Trigger>
+                <Select.Trigger style={{ width: '100%', height: '36px' }}>
                   <span>
                     {field.value
                       ? field.value.charAt(0).toUpperCase() +

@@ -1,10 +1,11 @@
-// CreateProperty.tsx
 'use client';
 
-import { Box } from '@radix-ui/themes';
+import { Controller } from 'react-hook-form';
 import { DOWNTOWN_TORONTO_CENTER_COORDS } from '../constants';
-import { useCreateProperty } from '../hooks';
+import { useCreateProperty, useGetAllUsers } from '../hooks';
 import { AddressAutocomplete, MapboxMap } from '../shared/components';
+import { Box, Button, DropdownMenu, Select, Spinner } from '@radix-ui/themes';
+import { useState } from 'react';
 
 export function CreateProperty() {
   const {
@@ -15,23 +16,28 @@ export function CreateProperty() {
     errors,
     onSubmit,
     isSubmitting,
+    control,
   } = useCreateProperty();
 
-  // get all the values from the form
-  const formValues = watch();
-  console.log('Form Values:', formValues);
+  const { users, isLoading: usersLoading } = useGetAllUsers();
 
-  // When the map is clicked, update the form values.
-  const handleMapClick = (lat: number, lng: number) => {
-    setValue('latitude', lat);
-    setValue('longitude', lng);
+  const formValues = watch();
+
+  // A state to force re-mounting the AddressAutocomplete after submission
+  const [autocompleteKey, setAutocompleteKey] = useState(0);
+
+  // workaround to reset the values for AddressAutocomplete
+  const handleFormSubmit = async (data: any) => {
+    await onSubmit(data);
+    // Change the key to force re-mount AddressAutocomplete and clear its internal state
+    setAutocompleteKey((prev) => prev + 1);
   };
 
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-lg font-medium text-gray-800">Create Property</h1>
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(handleFormSubmit)}
         className="space-y-4 flex flex-col justify-between min-h-[300px]"
       >
         <div className="space-y-4 pt-5">
@@ -54,7 +60,6 @@ export function CreateProperty() {
             )}
           </div>
 
-          {/* Address Autocomplete Field */}
           <div>
             <label
               htmlFor="address"
@@ -63,6 +68,7 @@ export function CreateProperty() {
               Address
             </label>
             <AddressAutocomplete
+              key={autocompleteKey}
               onSelect={({
                 address,
                 latitude,
@@ -93,21 +99,20 @@ export function CreateProperty() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-200 text-gray-500 rounded py-2 px-4 cursor-not-allowed ellipsis overflow-hidden whitespace-nowrap text-ellipsis">
-              Street: {formValues.street}
-            </div>
-            <div className="bg-gray-200 text-gray-500 rounded py-2 px-4 cursor-not-allowed ">
-              City: {formValues.city}
-            </div>
-            <div className="bg-gray-200 text-gray-500 rounded py-2 px-4 cursor-not-allowed ">
-              Country: {formValues.country}
-            </div>
-            <div className="bg-gray-200 text-gray-500 rounded py-2 px-4 cursor-not-allowed ">
-              Province: {formValues.province}
-            </div>
-            <div className="bg-gray-200 text-gray-500 rounded py-2 px-4 cursor-not-allowed ">
-              Postal Code: {formValues.postalCode}
-            </div>
+            {[
+              { label: 'Street', value: formValues.street },
+              { label: 'City', value: formValues.city },
+              { label: 'Country', value: formValues.country },
+              { label: 'Province', value: formValues.province },
+              { label: 'Postal Code', value: formValues.postalCode },
+            ].map(({ label, value }) => (
+              <div
+                key={label}
+                className="bg-gray-200 text-gray-500 rounded py-2 px-4 cursor-not-allowed max-h-[40px] ellipsis overflow-hidden whitespace-nowrap text-ellipsis"
+              >
+                {label}: {value}
+              </div>
+            ))}
           </div>
 
           <div className="mt-6">
@@ -119,6 +124,7 @@ export function CreateProperty() {
             )}
 
             <MapboxMap
+              pageHeight={'300px'}
               latitude={
                 formValues.latitude || DOWNTOWN_TORONTO_CENTER_COORDS[0]
               }
@@ -126,6 +132,47 @@ export function CreateProperty() {
                 formValues.longitude || DOWNTOWN_TORONTO_CENTER_COORDS[1]
               }
             />
+
+            <h1 className="text-lg pt-4 font-medium text-gray-800">
+              Assign Property Owner
+            </h1>
+            <div className="mt-2 w-full ">
+              {usersLoading ? (
+                <p>Loading property owners...</p>
+              ) : (
+                <Controller
+                  name={'ownerId'}
+                  control={control}
+                  render={({ field }) => {
+                    const selectedUser = users?.find(
+                      (user) => user.id == field.value
+                    );
+                    return (
+                      <Select.Root
+                        value={String(field.value)}
+                        onValueChange={field.onChange}
+                      >
+                        <Select.Trigger
+                          style={{ width: '100%', height: '36px' }}
+                        >
+                          {selectedUser ? selectedUser.name : 'Select Owner'}
+                        </Select.Trigger>
+                        <Select.Content>
+                          {users?.map((user) => (
+                            <Select.Item key={user.id} value={String(user.id)}>
+                              {user.name}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Root>
+                    );
+                  }}
+                />
+              )}
+              {errors.ownerId && (
+                <p className="text-red-500 text-sm">{errors.ownerId.message}</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -134,7 +181,7 @@ export function CreateProperty() {
           disabled={isSubmitting}
           className="w-full min-h-[40px] text-md flex items-center justify-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 hover:cursor-pointer"
         >
-          {isSubmitting ? 'Creating...' : 'Create Property'}
+          {isSubmitting ? <Spinner /> : 'Create Property'}
         </button>
       </form>
     </div>

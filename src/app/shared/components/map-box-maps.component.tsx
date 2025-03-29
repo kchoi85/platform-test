@@ -7,12 +7,14 @@ import mapboxgl from 'mapbox-gl';
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 
 interface MapboxMapProps {
+  pageHeight: string;
   latitude?: number;
   longitude?: number;
   onMapClick?: (lat: number, lng: number) => void;
 }
 
 export const MapboxMap: React.FC<MapboxMapProps> = ({
+  pageHeight,
   latitude,
   longitude,
   onMapClick,
@@ -26,7 +28,7 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
     if (mapContainerRef.current && !mapRef.current) {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/streets-v12',
         center: [longitude, latitude],
         zoom: 12,
       });
@@ -56,6 +58,6 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
   }, [latitude, longitude]);
 
   return (
-    <div ref={mapContainerRef} style={{ width: '100%', height: '300px' }} />
+    <div ref={mapContainerRef} style={{ width: '100%', height: pageHeight }} />
   );
 };
