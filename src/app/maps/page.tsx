@@ -14,7 +14,7 @@ import { MapSidePanel } from './components/map-side-panel.component';
 
 // Dynamically import MapEventHandler only on the client side.
 const DynamicMapEventHandler = dynamic(
-  () => import('./components/').then((mod) => mod.MapEventHandler),
+  () => import('./components').then((mod) => mod.MapEventHandler),
   { ssr: false }
 );
 

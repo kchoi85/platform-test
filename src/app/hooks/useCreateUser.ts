@@ -28,7 +28,7 @@ export const useCreateUser = () => {
     defaultValues: {
       name: '',
       email: '',
-      role: Role.OWNER,
+      role: Role.CUSTOMER,
     },
   });
 

@@ -12,34 +12,46 @@ export function CreateUserForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 bg-white p-6 rounded-lg shadow-lg h-full flex flex-col justify-between"
+      className="space-y-4 p-4 flex flex-col justify-between min-h-[300px]"
     >
       <div>
-        <h2 className="text-xl text-gray-800 border-b border-gray-300 pb-2">
-          Create New User
-        </h2>
+        <h2 className="text-lg text-gray-800 font-medium">Create a new user</h2>
 
         <div className="space-y-4 pt-5">
-          {/* Name input */}
-          <input
-            {...register('name')}
-            className="w-full border text-gray-900 border-gray-300 py-1 px-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-500"
-            placeholder="Full Name"
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm">{errors.name.message}</p>
-          )}
+          <div>
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Full Name
+            </label>
+            <input
+              {...register('name')}
+              className="w-full border text-gray-900 border-gray-300 py-1 px-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-500"
+              placeholder="John Doe"
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+          </div>
 
-          {/* Email input */}
-          <input
-            {...register('email')}
-            className="w-full border text-gray-900 border-gray-300 py-1 px-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-500"
-            placeholder="Email"
-            type="email"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email.message}</p>
-          )}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Full Name
+            </label>
+            <input
+              {...register('email')}
+              className="w-full border text-gray-900 border-gray-300 py-1 px-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-500"
+              placeholder="john.doe@email.com"
+              type="email"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
+          </div>
 
           {/* Role select using Controller for custom input */}
           <Controller
@@ -47,7 +59,7 @@ export function CreateUserForm() {
             control={control}
             render={({ field }) => (
               <Select.Root value={field.value} onValueChange={field.onChange}>
-                <Select.Trigger className="w-full border text-gray-900 border-gray-300 py-1 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder:text-gray-500">
+                <Select.Trigger>
                   <span>
                     {field.value
                       ? field.value.charAt(0).toUpperCase() +

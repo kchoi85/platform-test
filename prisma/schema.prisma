@@ -44,9 +44,17 @@ model User {
 }
 
 model Property {
-  id      Int     @id @default(autoincrement())
-  title   String
-  address String?
-  owners  User[]  // Many-to-many: a property can be owned by multiple users
+  id        Int      @id @default(autoincrement())
+  title     String
+  address   String?
+  latitude  Float?   // Stores the latitude coordinate
+  longitude Float?   // Stores the longitude coordinate
+  street    String?
+  city      String?
+  province  String?
+  country   String?
+  postalCode String?
+  owners    User[]   // Many-to-many: a property can be owned by multiple users
 }
 // END MODELS //
+
