@@ -6,7 +6,9 @@ const prisma = new PrismaClient();
 
 export const userRouter = router({
   getAll: publicProcedure.query(async () => {
-    return prisma.user.findMany();
+    return prisma.user.findMany({
+      include: { properties: true },
+    });
   }),
 
   findUnique: publicProcedure

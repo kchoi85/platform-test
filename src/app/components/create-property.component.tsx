@@ -108,7 +108,7 @@ export function CreateProperty() {
             ].map(({ label, value }) => (
               <div
                 key={label}
-                className="bg-gray-200 text-gray-500 rounded py-2 px-4 cursor-not-allowed max-h-[40px] ellipsis overflow-hidden whitespace-nowrap text-ellipsis"
+                className="flex items-center bg-gray-200 text-gray-500 rounded py-2 px-2 cursor-not-allowed max-h-[30px] ellipsis overflow-hidden whitespace-nowrap text-ellipsis"
               >
                 {label}: {value}
               </div>

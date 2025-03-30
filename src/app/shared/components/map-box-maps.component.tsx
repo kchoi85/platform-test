@@ -3,6 +3,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
+import { DOWNTOWN_TORONTO_CENTER_COORDS } from '@/app/constants';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 
@@ -15,8 +16,8 @@ interface MapboxMapProps {
 
 export const MapboxMap: React.FC<MapboxMapProps> = ({
   pageHeight,
-  latitude,
-  longitude,
+  latitude = DOWNTOWN_TORONTO_CENTER_COORDS[0],
+  longitude = DOWNTOWN_TORONTO_CENTER_COORDS[1],
   onMapClick,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -38,7 +39,7 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
       // When the map is clicked, update the form values.
       mapRef.current.on('click', (e) => {
         const { lng, lat } = e.lngLat;
-        onMapClick(lat, lng);
+        onMapClick?.(lat, lng);
       });
     }
   }, [onMapClick]);
@@ -47,8 +48,10 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
   useEffect(() => {
     if (mapRef.current) {
       mapRef.current.setCenter([longitude, latitude]);
-      if (markerRef.current) {
-        markerRef.current.setLngLat([longitude, latitude]);
+
+      const existingMarker = markerRef.current;
+      if (existingMarker) {
+        existingMarker.setLngLat([longitude, latitude]);
       } else {
         markerRef.current = new mapboxgl.Marker()
           .setLngLat([longitude, latitude])

@@ -1,6 +1,6 @@
 'use client';
 
-import { Spinner, Table } from '@radix-ui/themes';
+import { Badge, Flex, Spinner, Table } from '@radix-ui/themes';
 import Link from 'next/link';
 import { useGetAllUsers } from '../hooks';
 
@@ -41,7 +41,22 @@ export function UserList() {
                 {user.role?.charAt(0).toUpperCase() +
                   user.role?.slice(1).toLowerCase()}
               </Table.Cell>
-              <Table.Cell>{user?.properties?.length}</Table.Cell>
+              <Table.Cell>
+                <Flex gap="2">
+                  {user.properties.slice(0, 2).map((property) => (
+                    <Badge
+                      key={property.id}
+                      color="blue"
+                      className="hover:cursor-pointer"
+                    >
+                      {property.street}
+                    </Badge>
+                  ))}
+                  {user.properties.length > 2 && (
+                    <Badge color="blue">+{user.properties.length - 2}</Badge>
+                  )}
+                </Flex>
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>

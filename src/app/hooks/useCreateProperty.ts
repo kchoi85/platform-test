@@ -21,7 +21,7 @@ export const createPropertySchema = z.object({
 export type CreatePropertyFormData = z.infer<typeof createPropertySchema>;
 
 export const useCreateProperty = () => {
-  // const utils = trpc.useUtils();
+  const utils = trpc.useUtils();
 
   const {
     control,
@@ -57,6 +57,7 @@ export const useCreateProperty = () => {
       },
       onSettled: () => {
         // utils.property.getAll.invalidate();
+        utils.user.getAll.invalidate();
       },
     });
 

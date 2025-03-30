@@ -67,7 +67,7 @@ export function AddressAutocomplete({ onSelect }: AddressAutocompleteProps) {
   return (
     <div className="relative">
       <input
-        type="text"
+        type="search"
         value={query}
         placeholder="Search for address..."
         onChange={handleInputChange}
