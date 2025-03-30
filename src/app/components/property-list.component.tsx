@@ -16,15 +16,14 @@ export function PropertyList() {
     );
 
   return (
-    <div className="shadow-lg">
-      <Table.Root variant="surface" className="min-h-[350px]">
+    <div className="shadow-lg h-[780px]">
+      <Table.Root variant="surface" className="min-h-[350px] h-full">
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeaderCell>Property Name</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Address</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>City</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Country</Table.ColumnHeaderCell>
-
             <Table.ColumnHeaderCell>Owners</Table.ColumnHeaderCell>
           </Table.Row>
         </Table.Header>
