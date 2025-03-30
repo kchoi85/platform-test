@@ -14,6 +14,8 @@ export default function MapsPage() {
   const [center, setCenter] = useState(DOWNTOWN_TORONTO_CENTER_COORDS);
   const [bounds, setBounds] = useState(null);
 
+  const { properties, isLoading } = useGetAllProperties();
+
   // useEffect(() => {
   //   localStorage?.setItem('lightMode', String(isLightMode));
   // }, [isLightMode]);

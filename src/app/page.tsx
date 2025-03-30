@@ -1,29 +1,39 @@
 'use client';
 
-import { Link } from '@radix-ui/themes';
+import { Flex, Link } from '@radix-ui/themes';
 import { ExportOutlined } from '@ant-design/icons';
-import { LeftActionPanel, UserList } from './components';
+import { LeftActionPanel, PropertyList, UserList } from './components';
+import { useState } from 'react';
 
 export default function HomePage() {
+  const [panel, setPanel] = useState<'properties' | 'users'>('properties');
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-100 via-red-50 to-purple-100 p-8">
       <header className="mb-6 text-center">
         <h1 className="text-3xl  text-gray-800 flex justify-start">
           Admin Dashboard
         </h1>
-        <Link href="/maps">
-          <span className="flex justify-start pt-2 gap-2 font-medium">
-            <p className="text-md">Go to maps as admin</p>
-            <ExportOutlined />
-          </span>
-        </Link>
+        <span className="flex font-medium  w-max ">
+          <Link href="/maps">
+            <Flex gap="2">
+              <p className="text-md">Go to maps as admin</p>
+              <ExportOutlined />
+            </Flex>
+          </Link>
+        </span>
       </header>
       <div className="grid grid-cols-4 gap-4 flex-grow w-full">
         <div className="col-span-1">
-          <LeftActionPanel />
+          <LeftActionPanel panel={panel} onHandlePanel={setPanel} />
         </div>
         <div className="col-span-3">
-          <UserList />
+          <div className={panel === 'properties' ? 'block' : 'hidden'}>
+            <PropertyList />
+          </div>
+          <div className={panel === 'users' ? 'block' : 'hidden'}>
+            <UserList />
+          </div>
         </div>
       </div>
     </main>

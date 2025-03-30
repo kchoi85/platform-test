@@ -5,6 +5,28 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const propertyRouter = router({
+  // query
+  // once auth layer impl, use protectedProcedure
+  getAll: publicProcedure.query(async () => {
+    return await prisma.property.findMany({
+      include: {
+        owners: true,
+      },
+    });
+  }),
+
+  findUnique: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      return await prisma.property.findUnique({
+        where: { id: Number(input.id) },
+        include: {
+          owners: true,
+        },
+      });
+    }),
+
+  // mutation
   create: publicProcedure
     .input(
       z.object({

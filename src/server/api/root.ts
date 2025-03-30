@@ -1,6 +1,6 @@
 import { router } from './trpc';
-import { userRouter } from './routers/user';
-import { propertyRouter } from './routers/property';
+import { userRouter } from './routers/user.route';
+import { propertyRouter } from './routers/property.route';
 
 export const appRouter = router({
   user: userRouter,

@@ -1,15 +1,21 @@
 import { Tabs } from '@radix-ui/themes';
-import { useState } from 'react';
 import { CreateProperty } from './create-property.component';
 import { CreateUserForm } from './create-user-form.component';
 
-export function LeftActionPanel() {
-  const [panel, setPanel] = useState('properties');
+interface LeftActionPanelProps {
+  panel: 'properties' | 'users';
+  onHandlePanel: (panel: 'properties' | 'users') => void;
+}
 
+export function LeftActionPanel({
+  panel,
+  onHandlePanel,
+}: LeftActionPanelProps) {
   return (
     <Tabs.Root
       defaultValue={panel}
-      onValueChange={setPanel}
+      // @ts-ignore
+      onValueChange={onHandlePanel}
       className="shadow-lg rounded-lg bg-white border border-gray-300 h-full"
     >
       <Tabs.List
