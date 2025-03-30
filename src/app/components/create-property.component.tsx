@@ -35,7 +35,9 @@ export function CreateProperty() {
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-lg font-medium text-gray-800">Create Property</h1>
+      <h1 className="text-base font-medium text-gray-800">
+        Add a new property
+      </h1>
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
         className="space-y-4 flex flex-col justify-between min-h-[300px]"
@@ -47,7 +49,7 @@ export function CreateProperty() {
               htmlFor="property-title"
               className="block text-sm font-medium text-gray-700"
             >
-              Property Title
+              Property Title<span className="text-red-500">*</span>
             </label>
             <input
               {...register('title')}
@@ -65,7 +67,7 @@ export function CreateProperty() {
               htmlFor="address"
               className="block text-sm font-medium text-gray-700"
             >
-              Address
+              Address<span className="text-red-500">*</span>
             </label>
             <AddressAutocomplete
               key={autocompleteKey}
@@ -98,7 +100,7 @@ export function CreateProperty() {
             </small>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {[
               { label: 'Street', value: formValues.street },
               { label: 'City', value: formValues.city },
@@ -124,7 +126,7 @@ export function CreateProperty() {
             )}
 
             <MapboxMap
-              pageHeight={'300px'}
+              pageHeight={'250px'}
               latitude={
                 formValues.latitude || DOWNTOWN_TORONTO_CENTER_COORDS[0]
               }
@@ -133,12 +135,12 @@ export function CreateProperty() {
               }
             />
 
-            <h1 className="text-lg pt-4 font-medium text-gray-800">
-              Assign Property Owner
+            <h1 className="text-base pt-4 font-medium text-gray-800">
+              Assign property owner<span className="text-red-500">*</span>
             </h1>
             <div className="mt-2 w-full ">
               {usersLoading ? (
-                <p>Loading property owners...</p>
+                <Spinner />
               ) : (
                 <Controller
                   name={'ownerId'}
@@ -155,7 +157,9 @@ export function CreateProperty() {
                         <Select.Trigger
                           style={{ width: '100%', height: '36px' }}
                         >
-                          {selectedUser ? selectedUser.name : 'Select Owner'}
+                          {selectedUser
+                            ? selectedUser.name
+                            : 'Select from dropdown'}
                         </Select.Trigger>
                         <Select.Content>
                           {users?.map((user) => (

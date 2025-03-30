@@ -9,15 +9,15 @@ export default function HomePage() {
   const [panel, setPanel] = useState<'properties' | 'users'>('properties');
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-indigo-100 via-red-50 to-purple-100 p-8">
+    <main className="min-h-screen bg-gradient-to-b from-indigo-100 via-red-50 to-purple-100 p-8 pt-5">
       <header className="mb-6 text-center">
-        <h1 className="text-3xl  text-gray-800 flex justify-start">
+        <h1 className="text-2xl  text-gray-800 flex justify-start">
           Admin Dashboard
         </h1>
         <span className="flex font-medium  w-max ">
           <Link href="/maps">
             <Flex gap="2">
-              <p className="text-md">Go to maps as admin</p>
+              <p className="text-base">Go to maps as admin</p>
               <ExportOutlined />
             </Flex>
           </Link>

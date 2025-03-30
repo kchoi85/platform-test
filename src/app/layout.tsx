@@ -30,7 +30,7 @@ export default function RootLayout({
     <TrpcProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
         >
           <Theme>{children}</Theme>
         </body>
