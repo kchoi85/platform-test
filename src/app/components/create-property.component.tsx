@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form';
 import { DOWNTOWN_TORONTO_CENTER_COORDS } from '../constants';
 import { useCreateProperty, useGetAllUsers } from '../hooks';
 import { AddressAutocomplete, MapboxMap } from '../shared/components';
-import { Box, Button, DropdownMenu, Select, Spinner } from '@radix-ui/themes';
+import { Select, Spinner } from '@radix-ui/themes';
 import { useState } from 'react';
 
 export function CreateProperty() {

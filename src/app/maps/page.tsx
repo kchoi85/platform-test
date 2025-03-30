@@ -14,8 +14,6 @@ export default function MapsPage() {
   const [center, setCenter] = useState(DOWNTOWN_TORONTO_CENTER_COORDS);
   const [bounds, setBounds] = useState(null);
 
-  const { properties, isLoading } = useGetAllProperties();
-
   // useEffect(() => {
   //   localStorage?.setItem('lightMode', String(isLightMode));
   // }, [isLightMode]);
@@ -24,11 +22,7 @@ export default function MapsPage() {
 
   return (
     <main className="flex h-screen">
-      <MapboxMap
-        pageHeight={'100%'}
-        latitude={DOWNTOWN_TORONTO_CENTER_COORDS[0]}
-        longitude={DOWNTOWN_TORONTO_CENTER_COORDS[1]}
-      />
+      <MapboxMap pageHeight={'100%'} />
       <MapSidePanel bounds={bounds} center={DOWNTOWN_TORONTO_CENTER_COORDS} />
     </main>
   );

@@ -1,9 +1,10 @@
-// MapboxMap.tsx
 'use client';
 
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { DOWNTOWN_TORONTO_CENTER_COORDS } from '@/app/constants';
+import { useGetAllProperties } from '@/app/hooks';
+import { renderAndFitMarkers, showBoundsWithLatLng } from './utils/map.utils';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
 
@@ -16,21 +17,27 @@ interface MapboxMapProps {
 
 export const MapboxMap: React.FC<MapboxMapProps> = ({
   pageHeight,
-  latitude = DOWNTOWN_TORONTO_CENTER_COORDS[0],
-  longitude = DOWNTOWN_TORONTO_CENTER_COORDS[1],
+  latitude,
+  longitude,
   onMapClick,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
 
-  // Initialize the map on mount.
+  const { properties } = useGetAllProperties();
+
+  // Initialize the map
   useEffect(() => {
     if (mapContainerRef.current && !mapRef.current) {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [longitude, latitude],
+        center: [
+          longitude || DOWNTOWN_TORONTO_CENTER_COORDS[0],
+          latitude || DOWNTOWN_TORONTO_CENTER_COORDS[1],
+        ],
         zoom: 12,
       });
 
@@ -44,21 +51,28 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
     }
   }, [onMapClick]);
 
-  // Update map center and marker when latitude/longitude change.
-  useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.setCenter([longitude, latitude]);
+  const showAllMarkers = !latitude && !longitude;
 
-      const existingMarker = markerRef.current;
-      if (existingMarker) {
-        existingMarker.setLngLat([longitude, latitude]);
-      } else {
-        markerRef.current = new mapboxgl.Marker()
-          .setLngLat([longitude, latitude])
-          .addTo(mapRef.current);
-      }
-    }
-  }, [latitude, longitude]);
+  if (showAllMarkers) {
+    // render all markers and fit the correct bounds
+    useEffect(() => {
+      renderAndFitMarkers({
+        mapRef,
+        markersRef,
+        properties,
+      });
+    }, [properties]);
+  } else {
+    useEffect(() => {
+      // show default map (e.g. admin / properties create)
+      showBoundsWithLatLng({
+        mapRef,
+        markerRef,
+        latitude,
+        longitude,
+      });
+    }, [latitude, longitude]);
+  }
 
   return (
     <div ref={mapContainerRef} style={{ width: '100%', height: pageHeight }} />
